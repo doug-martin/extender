@@ -1,0 +1,30 @@
+{
+    "name": "extender",
+    "version": "0.0.1",
+    "description": "Easily create object decorators!",
+    "main": "index.js",
+    "scripts": {
+        "test": "it -r dotmatrix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:doug-martin/extender.git"
+    },
+    "keywords": [
+        "decorator",
+        "extend",
+        "extender",
+        "chain",
+        "wrap"
+    ],
+    "author": "Doug Martin (blog.dougamartin.com)",
+    "license": "MIT",
+    "dependencies": {
+        "declare.js": "0.0.2"
+    },
+    "devDependencies": {
+        "it": "~0.1.0",
+        "request": "~2.12.0",
+        "methods": "0.0.1"
+    }
+}
