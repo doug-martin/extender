@@ -62,7 +62,7 @@ myExtender("hello").multiply(2).value(); //hellohello
 
 ```
 
-If do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
+If you do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
 
 ```javascript
 
