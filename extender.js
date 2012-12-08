@@ -6,7 +6,7 @@
      * @projectName extender
      * @github http://github.com/doug-martin/extender
      * @header
-     *
+     * [![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
      * #Extender
      *
      * `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.

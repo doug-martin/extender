@@ -1,3 +1,7 @@
+<a name="top"></a>
+
+
+  [![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
 #Extender
 
 `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
@@ -168,13 +172,3 @@ str instanceof myExtender; //true
 ##Examples
 
 To see more examples click [here](https://github.com/doug-martin/extender/tree/master/examples)
-
-
-
-
-
-
-
-
-
-
