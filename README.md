@@ -44,7 +44,7 @@ function isString(obj) {
 
 
 var myExtender =
-    .define(isString, {
+    extender.define(isString, {
 		multiply: function (str, times) {
 			var ret = str;
 			for (var i = 1; i < times; i++) {
