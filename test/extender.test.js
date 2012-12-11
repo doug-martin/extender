@@ -35,6 +35,21 @@ it.describe("extender",function (it) {
             toArray: function (str, delim) {
                 delim = delim || "";
                 return str.split(delim);
+            },
+
+            noWrap: {
+                multiplyPlain: function (str, times) {
+                    var ret = str;
+                    for (var i = 1; i < times; i++) {
+                        ret += str;
+                    }
+                    return ret;
+                },
+
+                toArrayPlain: function (str, delim) {
+                    delim = delim || "";
+                    return str.split(delim);
+                }
             }
         })
         .define(is.array, {
@@ -44,12 +59,28 @@ it.describe("extender",function (it) {
                     ret.push(arr[i][m]);
                 }
                 return ret;
+            },
+
+            noWrap: {
+                pluckPlain: function (arr, m) {
+                    var ret = [];
+                    for (var i = 0, l = arr.length; i < l; i++) {
+                        ret.push(arr[i][m]);
+                    }
+                    return ret;
+                }
             }
         })
         .define(is.boolean, {
 
             invert: function (val) {
                 return !val;
+            },
+
+            noWrap: {
+                invertPlain: function (val) {
+                    return !val;
+                }
             }
 
         });
@@ -82,6 +113,16 @@ it.describe("extender",function (it) {
         ]);
         assert.isTrue(extended.isArray().value());
         assert.deepEqual(extended.pluck("a").value(), ["a", "b", "c"]);
+    });
+
+    it.should("not wrap methods in noWrap", function () {
+        assert.equal(myExtender("hello").multiplyPlain(5), "hellohellohellohellohello");
+        assert.isFalse(myExtender(true).invertPlain());
+        assert.deepEqual(myExtender([
+            {a: "a"},
+            {a: "b"},
+            {a: "c"}
+        ]).pluckPlain("a"), ["a", "b", "c"]);
     });
 
     it.should("keep extenders in their own scope", function () {

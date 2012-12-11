@@ -6,6 +6,12 @@
 
 `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
 
+##Why Is Extender Different?
+
+Extender is different than normal chaining because is does more than return `this`. It decorates your values in a type safe manner.
+
+For example if you return an array from a string based method then the returned value will be decorated with array methods and not the string methods. This allow you as the developer to focus on your API and not worrying about how to properly build and connect your API.
+
 
 ##Installation
 
@@ -43,8 +49,7 @@ function isString(obj) {
 }
 
 
-var myExtender =
-    .define(isString, {
+var myExtender = extender.define(isString, {
 		multiply: function (str, times) {
 			var ret = str;
 			for (var i = 1; i < times; i++) {
@@ -62,7 +67,7 @@ myExtender("hello").multiply(2).value(); //hellohello
 
 ```
 
-If do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
+If you do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
 
 ```javascript
 
@@ -159,6 +164,31 @@ myExtender.define(isString, {
 });
 ```
 
+**`noWrap`**
+
+`extender` also allows you to specify methods that should not have the value wrapped providing a cleaner exit function other than `value()`.
+
+For example suppose you have an API that allows you to build a validator, rather than forcing the user to invoke the `value` method you could add a method called `validator` which makes more syntactic sense.
+
+```
+
+var myValidator = extender.define({
+    //chainable validation methods
+    //...
+    //end chainable validation methods
+
+    noWrap : {
+        validator : function(){
+            //return your validator
+        }
+    }
+});
+
+myValidator().isNotNull().isEmailAddress().validator(); //now you dont need to call .value()
+
+
+```
+
 **Using `instanceof`**
 
 When using extenders you can test if a value is an `instanceof` of an extender by using the instanceof operator.
@@ -172,3 +202,12 @@ str instanceof myExtender; //true
 ##Examples
 
 To see more examples click [here](https://github.com/doug-martin/extender/tree/master/examples)
+
+
+
+
+
+
+
+
+

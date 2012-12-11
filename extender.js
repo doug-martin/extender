@@ -11,6 +11,12 @@
      *
      * `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
      *
+     * ##Why Is Extender Different?
+     *
+     * Extender is different than normal chaining because is does more than return `this`. It decorates your values in a type safe manner.
+     *
+     * For example if you return an array from a string based method then the returned value will be decorated with array methods and not the string methods. This allow you as the developer to focus on your API and not worrying about how to properly build and connect your API.
+     *
      *
      * ##Installation
      *
@@ -48,8 +54,7 @@
      * }
      *
      *
-     * var myExtender =
-     *     .define(isString, {
+     * var myExtender = extender.define(isString, {
      * 		multiply: function (str, times) {
      * 			var ret = str;
      * 			for (var i = 1; i < times; i++) {
@@ -67,7 +72,7 @@
      *
      * ```
      *
-     * If do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
+     * If you do not specify a tester function and just pass in an object of `functions` then all values passed in will be decorated with methods.
      *
      * ```javascript
      *
@@ -164,6 +169,31 @@
      * });
      * ```
      *
+     * **`noWrap`**
+     *
+     * `extender` also allows you to specify methods that should not have the value wrapped providing a cleaner exit function other than `value()`.
+     *
+     * For example suppose you have an API that allows you to build a validator, rather than forcing the user to invoke the `value` method you could add a method called `validator` which makes more syntactic sense.
+     *
+     * ```
+     *
+     * var myValidator = extender.define({
+     *     //chainable validation methods
+     *     //...
+     *     //end chainable validation methods
+     *
+     *     noWrap : {
+     *         validator : function(){
+     *             //return your validator
+     *         }
+     *     }
+     * });
+     *
+     * myValidator().isNotNull().isEmailAddress().validator(); //now you dont need to call .value()
+     *
+     *
+     * ```
+     *
      * **Using `instanceof`**
      *
      * When using extenders you can test if a value is an `instanceof` of an extender by using the instanceof operator.
@@ -254,6 +284,45 @@
                 proto[name] = extendedMethod
             }
 
+            function addNoWrapMethod(proto, name, func) {
+                if ("function" !== typeof func) {
+                    throw new TypeError("when extending type you must provide a function");
+                }
+                var extendedMethod;
+                if (name === "constructor") {
+                    extendedMethod = function () {
+                        var args = slice.call(arguments);
+                        this._super(arguments);
+                        func.apply(this, arguments);
+                    }
+                } else {
+                    extendedMethod = function extendedMethod() {
+                        var args = slice.call(arguments);
+                        args.unshift(this._value)
+                        return func.apply(this, args);
+                    }
+                }
+                proto[name] = extendedMethod
+            }
+
+            function decorateProto(proto, decoration, nowrap) {
+                for (var i in decoration) {
+                    if (decoration.hasOwnProperty(i)) {
+                        if (i !== "getters" && i !== "setters") {
+                            if (i === "noWrap") {
+                                decorateProto(proto, decoration[i], true);
+                            } else if (nowrap) {
+                                addNoWrapMethod(proto, i, decoration[i])
+                            } else {
+                                addMethod(proto, i, decoration[i]);
+                            }
+                        } else {
+                            proto[i] = decoration[i];
+                        }
+                    }
+                }
+            }
+
             function _extender(obj) {
                 var ret = obj;
                 if (!(obj instanceof Base)) {
@@ -279,11 +348,7 @@
                     tester = always;
                 }
                 var proto = {};
-                for (var i in decorate) {
-                    if (decorate.hasOwnProperty(i)) {
-                        addMethod(proto, i, decorate[i]);
-                    }
-                }
+                decorateProto(proto, decorate);
                 defined.push([tester, proto]);
                 return _extender;
             }

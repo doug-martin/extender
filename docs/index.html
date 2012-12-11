@@ -169,6 +169,13 @@
 <h1>Extender</h1>
 <p><code>extender</code> is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
 
+</p>
+<h2>Why Is Extender Different?</h2>
+<p>Extender is different than normal chaining because is does more than return <code>this</code>. It decorates your values in a type safe manner.
+
+</p>
+<p>For example if you return an array from a string based method then the returned value will be decorated with array methods and not the string methods. This allow you as the developer to focus on your API and not worrying about how to properly build and connect your API.
+
 
 </p>
 <h2>Installation</h2>
@@ -201,8 +208,7 @@ define([&quot;extender&quot;], function(extender){
 }
 
 
-var myExtender =
-    .define(isString, {
+var myExtender = extender.define(isString, {
         multiply: function (str, times) {
             var ret = str;
             for (var i = 1; i &lt; times; i++) {
@@ -217,7 +223,7 @@ var myExtender =
     });
 
 myExtender(&quot;hello&quot;).multiply(2).value(); //hellohello</code></pre>
-<p>If do not specify a tester function and just pass in an object of <code>functions</code> then all values passed in will be decorated with methods.
+<p>If you do not specify a tester function and just pass in an object of <code>functions</code> then all values passed in will be decorated with methods.
 
 </p>
 <pre class='prettyprint linenums lang-js'><code class="lang-javascript">
@@ -311,6 +317,29 @@ myExtender(&quot;I love javascript!&quot;).toArray(/\s+/).pluck(&quot;0&quot;); 
         this._value = val.trimRight().trimLeft();
     }
 });</code></pre>
+<p><strong><code>noWrap</code></strong>
+
+</p>
+<p><code>extender</code> also allows you to specify methods that should not have the value wrapped providing a cleaner exit function other than <code>value()</code>.
+
+</p>
+<p>For example suppose you have an API that allows you to build a validator, rather than forcing the user to invoke the <code>value</code> method you could add a method called <code>validator</code> which makes more syntactic sense.
+
+</p>
+<pre class='prettyprint linenums lang-js'><code>
+var myValidator = extender.define({
+    //chainable validation methods
+    //...
+    //end chainable validation methods
+
+    noWrap : {
+        validator : function(){
+            //return your validator
+        }
+    }
+});
+
+myValidator().isNotNull().isEmailAddress().validator(); //now you dont need to call .value()</code></pre>
 <p><strong>Using <code>instanceof</code></strong>
 
 </p>
