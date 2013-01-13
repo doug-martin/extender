@@ -261,6 +261,33 @@
      *
      * **Note** `myExtender` and `myExtender2` will **NOT** be altered.
      *
+     * **`extender.expose(methods)`**
+     *
+     * The `expose` method allows you to add methods to your extender that are not wrapped or automatically chained by exposing them on the extender directly.
+     *
+     * ```
+     * var isMethods = {
+     *      isFunction: is.function,
+     *      isNumber: is.number,
+     *      isString: is.string,
+     *      isDate: is.date,
+     *      isArray: is.array,
+     *      isBoolean: is.boolean,
+     *      isUndefined: is.undefined,
+     *      isDefined: is.defined,
+     *      isUndefinedOrNull: is.undefinedOrNull,
+     *      isNull: is.null,
+     *      isArguments: is.arguments,
+     *      isInstanceOf: is.instanceOf,
+     *      isRegExp: is.regExp
+     * };
+     *
+     * var myExtender = extender.define(isMethods).expose(isMethods);
+     *
+     * myExtender.isArray([]); //true
+     * myExtender([]).isArray([]).value(); //true
+     *
+     * ```
      *
      *
      * **Using `instanceof`**
@@ -411,14 +438,16 @@
             }
 
             function define(tester, decorate) {
-                if (!decorate) {
-                    decorate = tester;
-                    tester = always;
+                if (arguments.length) {
+                    if (typeof tester === "object") {
+                        decorate = tester;
+                        tester = always;
+                    }
+                    decorate = decorate || {};
+                    var proto = {};
+                    decorateProto(proto, decorate);
+                    defined.push([tester, proto]);
                 }
-                decorate = decorate || {};
-                var proto = {};
-                decorateProto(proto, decorate);
-                defined.push([tester, proto]);
                 return _extender;
             }
 
@@ -426,11 +455,31 @@
                 if (supr && supr.hasOwnProperty("__defined__")) {
                     defined = defined.concat(supr["__defined__"]);
                 }
+                for (var i in supr) {
+                    if (supr.hasOwnProperty(i) && i !== "define" && i !== "extend" && i !== "expose") {
+                        _extender[i] = supr[i];
+                    }
+                }
                 return _extender;
             }
 
             _extender.define = define;
             _extender.extend = extend;
+            _extender.expose = function expose() {
+                var methods;
+                for (var i = 0, l = arguments.length; i < l; i++) {
+                    methods = arguments[i];
+                    if (typeof methods === "object") {
+                        for (var j in methods) {
+                            if (methods.hasOwnProperty(j) && j !== "define" && j !== "extend" && j !== "expose") {
+                                _extender[i] = methods[i];
+                            }
+                        }
+                        merge(_extender, arguments[i]);
+                    }
+                }
+                return _extender;
+            };
             _extender["__defined__"] = defined;
 
 

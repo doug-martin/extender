@@ -7,22 +7,23 @@ var it = require("it"),
 
 it.describe("extender",function (it) {
 
+    var isMethods = {
+        isFunction: is.function,
+        isNumber: is.number,
+        isString: is.string,
+        isDate: is.date,
+        isArray: is.array,
+        isBoolean: is.boolean,
+        isUndefined: is.undefined,
+        isDefined: is.defined,
+        isUndefinedOrNull: is.undefinedOrNull,
+        isNull: is.null,
+        isArguments: is.arguments,
+        isInstanceOf: is.instanceOf,
+        isRegExp: is.regExp
+    };
     var myExtender = extender
-        .define({
-            isFunction: is.function,
-            isNumber: is.number,
-            isString: is.string,
-            isDate: is.date,
-            isArray: is.array,
-            isBoolean: is.boolean,
-            isUndefined: is.undefined,
-            isDefined: is.defined,
-            isUndefinedOrNull: is.undefinedOrNull,
-            isNull: is.null,
-            isArguments: is.arguments,
-            isInstanceOf: is.instanceOf,
-            isRegExp: is.regExp
-        })
+        .define(isMethods)
         .define(is.string, {
             multiply: function (str, times) {
                 var ret = str;
@@ -83,7 +84,8 @@ it.describe("extender",function (it) {
                 }
             }
 
-        });
+        })
+        .expose(isMethods);
 
     it.should("add eq, neq", function () {
         var str = myExtender("hello");
@@ -125,6 +127,12 @@ it.describe("extender",function (it) {
         ]).pluckPlain("a"), ["a", "b", "c"]);
     });
 
+    it.should("add static methods to extenders if defined", function () {
+        assert.isTrue(myExtender.isBoolean(true));
+        assert.isTrue(myExtender.isString("hello"));
+        assert.isTrue(myExtender.isArray([]));
+    });
+
     it.should("keep extenders in their own scope", function () {
         var myExtender = extender
             .define({
@@ -154,21 +162,8 @@ it.describe("extender",function (it) {
 
     it.should("allow extending extenders", function () {
         var myExtender = extender
-            .define({
-                isFunction: is.function,
-                isNumber: is.number,
-                isString: is.string,
-                isDate: is.date,
-                isArray: is.array,
-                isBoolean: is.boolean,
-                isUndefined: is.undefined,
-                isDefined: is.defined,
-                isUndefinedOrNull: is.undefinedOrNull,
-                isNull: is.null,
-                isArguments: is.arguments,
-                isInstanceOf: is.instanceOf,
-                isRegExp: is.regExp
-            });
+            .define(isMethods)
+            .expose(isMethods);
         var myExtender2 = extender.define(is.array, {
             pluck: function (arr, m) {
                 var ret = [];
@@ -196,6 +191,7 @@ it.describe("extender",function (it) {
             {a: "c"}
         ]);
         assert.isTrue(extended.isArray().value());
+        assert.isTrue(composed.isArray([]));
         assert.deepEqual(extended.pluck("a").value(), ["a", "b", "c"]);
 
         //it should not alter the compsing extenders

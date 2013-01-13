@@ -255,6 +255,33 @@ extended.pluck("a").value(); // ["a", "b", "c"]);
 
 **Note** `myExtender` and `myExtender2` will **NOT** be altered.
 
+**`extender.expose(methods)`**
+
+The `expose` method allows you to add methods to your extender that are not wrapped or automatically chained by exposing them on the extender directly.
+
+```
+var isMethods = {
+     isFunction: is.function,
+     isNumber: is.number,
+     isString: is.string,
+     isDate: is.date,
+     isArray: is.array,
+     isBoolean: is.boolean,
+     isUndefined: is.undefined,
+     isDefined: is.defined,
+     isUndefinedOrNull: is.undefinedOrNull,
+     isNull: is.null,
+     isArguments: is.arguments,
+     isInstanceOf: is.instanceOf,
+     isRegExp: is.regExp
+};
+
+var myExtender = extender.define(isMethods).expose(isMethods);
+
+myExtender.isArray([]); //true
+myExtender([]).isArray([]).value(); //true
+
+```
 
 
 **Using `instanceof`**
@@ -270,3 +297,12 @@ str instanceof myExtender; //true
 ## Examples
 
 To see more examples click [here](https://github.com/doug-martin/extender/tree/master/examples)
+
+
+
+
+
+
+
+
+
