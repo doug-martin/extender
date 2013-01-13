@@ -39,7 +39,7 @@ module.exports = function (grunt) {
         min: {
             dist: {
                 src: ['<banner:meta.banner>', 'extender.js'],
-                dest: '<%= pkg.name %>.min.js'
+                dest: '<%= pkg.name %>-min.js'
             }
         },
         watch: {
