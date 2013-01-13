@@ -472,10 +472,9 @@
                     if (typeof methods === "object") {
                         for (var j in methods) {
                             if (methods.hasOwnProperty(j) && j !== "define" && j !== "extend" && j !== "expose") {
-                                _extender[i] = methods[i];
+                                _extender[j] = methods[j];
                             }
                         }
-                        merge(_extender, arguments[i]);
                     }
                 }
                 return _extender;
