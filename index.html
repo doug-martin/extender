@@ -401,9 +401,33 @@ extended.isArray().value(); //true
 extended.pluck(&quot;a&quot;).value(); // [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</code></pre>
 <p><strong>Note</strong> <code>myExtender</code> and <code>myExtender2</code> will <strong>NOT</strong> be altered.
 
-
+</p>
+<p><strong><code>extender.expose(methods)</code></strong>
 
 </p>
+<p>The <code>expose</code> method allows you to add methods to your extender that are not wrapped or automatically chained by exposing them on the extender directly.
+
+</p>
+<pre class='prettyprint linenums lang-js'><code>var isMethods = {
+     isFunction: is.function,
+     isNumber: is.number,
+     isString: is.string,
+     isDate: is.date,
+     isArray: is.array,
+     isBoolean: is.boolean,
+     isUndefined: is.undefined,
+     isDefined: is.defined,
+     isUndefinedOrNull: is.undefinedOrNull,
+     isNull: is.null,
+     isArguments: is.arguments,
+     isInstanceOf: is.instanceOf,
+     isRegExp: is.regExp
+};
+
+var myExtender = extender.define(isMethods).expose(isMethods);
+
+myExtender.isArray([]); //true
+myExtender([]).isArray([]).value(); //true</code></pre>
 <p><strong>Using <code>instanceof</code></strong>
 
 </p>
