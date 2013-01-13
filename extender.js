@@ -308,11 +308,27 @@
 
 
         var slice = Array.prototype.slice, undef;
+
+        function indexOf(arr, item) {
+            if (arr && arr.length) {
+                for (var i = 0, l = arr.length; i < l; i++) {
+                    if (arr[i] === item) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+
+        function isArray(obj) {
+            return Object.prototype.toString.call(obj) === "[object Array]";
+        }
+
         var merge = (function merger() {
-            function _merge(target, source) {
+            function _merge(target, source, exclude) {
                 var name, s;
                 for (name in source) {
-                    if (source.hasOwnProperty(name)) {
+                    if (source.hasOwnProperty(name) && indexOf(exclude, name) === -1) {
                         s = source[name];
                         if (!(name in target) || (target[name] !== s)) {
                             target[name] = s;
@@ -326,12 +342,20 @@
                 if (!obj) {
                     obj = {};
                 }
-                for (var i = 1, l = arguments.length; i < l; i++) {
-                    _merge(obj, arguments[i]);
+                var l = arguments.length;
+                var exclude = arguments[arguments.length - 1];
+                if (isArray(exclude)) {
+                    l--;
+                } else {
+                    exclude = [];
+                }
+                for (var i = 1; i < l; i++) {
+                    _merge(obj, arguments[i], exclude);
                 }
                 return obj; // Object
             };
         }());
+
 
         function extender(supers) {
             supers = supers || [];
@@ -453,13 +477,9 @@
 
             function extend(supr) {
                 if (supr && supr.hasOwnProperty("__defined__")) {
-                    defined = defined.concat(supr["__defined__"]);
+                    _extender["__defined__"] = defined = defined.concat(supr["__defined__"]);
                 }
-                for (var i in supr) {
-                    if (supr.hasOwnProperty(i) && i !== "define" && i !== "extend" && i !== "expose") {
-                        _extender[i] = supr[i];
-                    }
-                }
+                merge(_extender, supr, ["define", "extend", "expose", "__defined__"]);
                 return _extender;
             }
 
@@ -470,11 +490,7 @@
                 for (var i = 0, l = arguments.length; i < l; i++) {
                     methods = arguments[i];
                     if (typeof methods === "object") {
-                        for (var j in methods) {
-                            if (methods.hasOwnProperty(j) && j !== "define" && j !== "extend" && j !== "expose") {
-                                _extender[j] = methods[j];
-                            }
-                        }
+                        merge(_extender, methods, ["define", "extend", "expose", "__defined__"]);
                     }
                 }
                 return _extender;
