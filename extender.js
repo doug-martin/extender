@@ -1,4 +1,5 @@
 (function () {
+    /*jshint strict:false*/
 
 
     /**
@@ -7,18 +8,18 @@
      * @github http://github.com/doug-martin/extender
      * @header
      * [![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
-     * #Extender
+     * # Extender
      *
      * `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
      *
-     * ##Why Is Extender Different?
+     * ## Why Is Extender Different?
      *
      * Extender is different than normal chaining because is does more than return `this`. It decorates your values in a type safe manner.
      *
      * For example if you return an array from a string based method then the returned value will be decorated with array methods and not the string methods. This allow you as the developer to focus on your API and not worrying about how to properly build and connect your API.
      *
      *
-     * ##Installation
+     * ## Installation
      *
      * ```
      * npm install extender
@@ -28,7 +29,7 @@
      *
      * **Note** `extender` depends on [`declare.js`](http://doug-martin.github.com/declare.js/).
      *
-     * ###Requirejs
+     * ### Requirejs
      *
      * To use with requirejs place the `extend` source in the root scripts directory
      *
@@ -40,7 +41,7 @@
      * ```
      *
      *
-     * ##Usage
+     * ## Usage
      *
      * **`extender.define(tester, decorations)`**
      *
@@ -55,18 +56,18 @@
      *
      *
      * var myExtender = extender.define(isString, {
-     * 		multiply: function (str, times) {
-     * 			var ret = str;
-     * 			for (var i = 1; i < times; i++) {
-     * 				ret += str;
-     * 			}
-     * 			return ret;
-     * 		},
-     * 		toArray: function (str, delim) {
-     * 			delim = delim || "";
-     * 			return str.split(delim);
-     * 		}
-     * 	});
+     *		multiply: function (str, times) {
+     *			var ret = str;
+     *			for (var i = 1; i < times; i++) {
+     *				ret += str;
+     *			}
+     *			return ret;
+     *		},
+     *		toArray: function (str, delim) {
+     *			delim = delim || "";
+     *			return str.split(delim);
+     *		}
+     *	});
      *
      * myExtender("hello").multiply(2).value(); //hellohello
      *
@@ -82,7 +83,7 @@
      * }
      *
      * function isUndefinedOrNull(obj) {
-     * 	var undef;
+     *	var undef;
      *     return obj === undef || obj === null;
      * }
      *
@@ -100,11 +101,11 @@
      * }
      *
      * var myExtender = extender.define({
-     * 	isUndefined : isUndefined,
-     * 	isUndefinedOrNull : isUndefinedOrNull,
-     * 	isArray : isArray,
-     * 	isBoolean : isBoolean,
-     * 	isString : isString
+     *	isUndefined : isUndefined,
+     *	isUndefinedOrNull : isUndefinedOrNull,
+     *	isArray : isArray,
+     *	isBoolean : isBoolean,
+     *	isString : isString
      * });
      *
      * ```
@@ -122,19 +123,19 @@
      * ```javascript
      * myExtender
      *     .define(isArray, {
-     * 		pluck: function (arr, m) {
-     * 			var ret = [];
-     * 			for (var i = 0, l = arr.length; i < l; i++) {
-     * 				ret.push(arr[i][m]);
-     * 			}
-     * 			return ret;
-     * 		}
-     * 	})
+     *		pluck: function (arr, m) {
+     *			var ret = [];
+     *			for (var i = 0, l = arr.length; i < l; i++) {
+     *				ret.push(arr[i][m]);
+     *			}
+     *			return ret;
+     *		}
+     *	})
      *     .define(isBoolean, {
-     * 		invert: function (val) {
-     * 			return !val;
-     * 		}
-     * 	});
+     *		invert: function (val) {
+     *			return !val;
+     *		}
+     *	});
      *
      * myExtender([{a: "a"},{a: "b"},{a: "c"}]).pluck("a").value(); //["a", "b", "c"]
      * myExtender("I love javascript!").toArray(/\s+/).pluck("0"); //["I", "l", "j"]
@@ -162,10 +163,10 @@
      *
      * ```javascript
      * myExtender.define(isString, {
-     * 	constructor : function(val){
-     * 	    //set our value to the string trimmed
-     * 		this._value = val.trimRight().trimLeft();
-     * 	}
+     *	constructor : function(val){
+     *     //set our value to the string trimmed
+     *		this._value = val.trimRight().trimLeft();
+     *	}
      * });
      * ```
      *
@@ -193,6 +194,74 @@
      *
      *
      * ```
+     * **`extender.extend(extendr)`**
+     *
+     * You may also compose extenders through the use of `extender.extend(extender)`, which will return an entirely new extender that is the composition of extenders.
+     *
+     * Suppose you have the following two extenders.
+     *
+     * ```javascript
+     * var myExtender = extender
+     *        .define({
+     *            isFunction: is.function,
+     *            isNumber: is.number,
+     *            isString: is.string,
+     *            isDate: is.date,
+     *            isArray: is.array,
+     *            isBoolean: is.boolean,
+     *            isUndefined: is.undefined,
+     *            isDefined: is.defined,
+     *            isUndefinedOrNull: is.undefinedOrNull,
+     *            isNull: is.null,
+     *            isArguments: is.arguments,
+     *            isInstanceOf: is.instanceOf,
+     *            isRegExp: is.regExp
+     *        });
+     * var myExtender2 = extender.define(is.array, {
+     *     pluck: function (arr, m) {
+     *         var ret = [];
+     *         for (var i = 0, l = arr.length; i < l; i++) {
+     *             ret.push(arr[i][m]);
+     *         }
+     *         return ret;
+     *     },
+     *
+     *     noWrap: {
+     *         pluckPlain: function (arr, m) {
+     *             var ret = [];
+     *             for (var i = 0, l = arr.length; i < l; i++) {
+     *                 ret.push(arr[i][m]);
+     *             }
+     *             return ret;
+     *         }
+     *     }
+     * });
+     *
+     *
+     * ```
+     *
+     * And you do not want to alter either of them but instead what to create a third that is the union of the two.
+     *
+     *
+     * ```javascript
+     * var composed = extender.extend(myExtender).extend(myExtender2);
+     * ```
+     * So now you can use the new extender with the joined functionality if `myExtender` and `myExtender2`.
+     *
+     * ```javascript
+     * var extended = composed([
+     *      {a: "a"},
+     *      {a: "b"},
+     *      {a: "c"}
+     * ]);
+     * extended.isArray().value(); //true
+     * extended.pluck("a").value(); // ["a", "b", "c"]);
+     *
+     * ```
+     *
+     * **Note** `myExtender` and `myExtender2` will **NOT** be altered.
+     *
+     *
      *
      * **Using `instanceof`**
      *
@@ -204,7 +273,7 @@
      * str instanceof myExtender; //true
      * ```
      *
-     * ##Examples
+     * ## Examples
      *
      * To see more examples click [here](https://github.com/doug-martin/extender/tree/master/examples)
      */
@@ -226,7 +295,7 @@
                 return target;
             }
 
-            return function merge(obj, props) {
+            return function merge(obj) {
                 if (!obj) {
                     obj = {};
                 }
@@ -234,10 +303,11 @@
                     _merge(obj, arguments[i]);
                 }
                 return obj; // Object
-            }
+            };
         }());
 
-        function extender() {
+        function extender(supers) {
+            supers = supers || [];
             var Base = declare({
                 instance: {
                     constructor: function (value) {
@@ -269,19 +339,18 @@
                 var extendedMethod;
                 if (name === "constructor") {
                     extendedMethod = function () {
-                        var args = slice.call(arguments);
                         this._super(arguments);
                         func.apply(this, arguments);
-                    }
+                    };
                 } else {
                     extendedMethod = function extendedMethod() {
                         var args = slice.call(arguments);
-                        args.unshift(this._value)
+                        args.unshift(this._value);
                         var ret = func.apply(this, args);
                         return ret !== undef ? _extender(ret) : this;
-                    }
+                    };
                 }
-                proto[name] = extendedMethod
+                proto[name] = extendedMethod;
             }
 
             function addNoWrapMethod(proto, name, func) {
@@ -291,18 +360,17 @@
                 var extendedMethod;
                 if (name === "constructor") {
                     extendedMethod = function () {
-                        var args = slice.call(arguments);
                         this._super(arguments);
                         func.apply(this, arguments);
-                    }
+                    };
                 } else {
                     extendedMethod = function extendedMethod() {
                         var args = slice.call(arguments);
-                        args.unshift(this._value)
+                        args.unshift(this._value);
                         return func.apply(this, args);
-                    }
+                    };
                 }
-                proto[name] = extendedMethod
+                proto[name] = extendedMethod;
             }
 
             function decorateProto(proto, decoration, nowrap) {
@@ -312,7 +380,7 @@
                             if (i === "noWrap") {
                                 decorateProto(proto, decoration[i], true);
                             } else if (nowrap) {
-                                addNoWrapMethod(proto, i, decoration[i])
+                                addNoWrapMethod(proto, i, decoration[i]);
                             } else {
                                 addMethod(proto, i, decoration[i]);
                             }
@@ -324,10 +392,10 @@
             }
 
             function _extender(obj) {
-                var ret = obj;
+                var ret = obj, i, l;
                 if (!(obj instanceof Base)) {
                     var base = {}, instance = (base.instance = {});
-                    for (var i = 0, l = defined.length; i < l; i++) {
+                    for (i = 0, l = defined.length; i < l; i++) {
                         var definer = defined[i];
                         if (definer[0](obj)) {
                             merge(instance, definer[1]);
@@ -342,18 +410,29 @@
                 return true;
             }
 
-            function define(tester, decorate, chain) {
+            function define(tester, decorate) {
                 if (!decorate) {
                     decorate = tester;
                     tester = always;
                 }
+                decorate = decorate || {};
                 var proto = {};
                 decorateProto(proto, decorate);
                 defined.push([tester, proto]);
                 return _extender;
             }
 
+            function extend(supr) {
+                if (supr && supr.hasOwnProperty("__defined__")) {
+                    defined = defined.concat(supr["__defined__"]);
+                }
+                return _extender;
+            }
+
             _extender.define = define;
+            _extender.extend = extend;
+            _extender["__defined__"] = defined;
+
 
             return _extender;
         }
@@ -361,8 +440,12 @@
         return {
             define: function () {
                 return extender().define.apply(extender, arguments);
+            },
+
+            extend: function (supr) {
+                return extender().define().extend(supr);
             }
-        }
+        };
 
     }
 
@@ -376,7 +459,7 @@
             return defineExtender((require("declare.js")));
         });
     } else {
-        this.extender = defineExtender(declare);
+        this.extender = defineExtender(this.declare);
     }
 
 }).call(this);

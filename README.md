@@ -2,18 +2,18 @@
 
 
   [![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
-#Extender
+# Extender
 
 `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.
 
-##Why Is Extender Different?
+## Why Is Extender Different?
 
 Extender is different than normal chaining because is does more than return `this`. It decorates your values in a type safe manner.
 
 For example if you return an array from a string based method then the returned value will be decorated with array methods and not the string methods. This allow you as the developer to focus on your API and not worrying about how to properly build and connect your API.
 
 
-##Installation
+## Installation
 
 ```
 npm install extender
@@ -23,7 +23,7 @@ Or [download the source](https://raw.github.com/doug-martin/extender/master/exte
 
 **Note** `extender` depends on [`declare.js`](http://doug-martin.github.com/declare.js/).
 
-###Requirejs
+### Requirejs
 
 To use with requirejs place the `extend` source in the root scripts directory
 
@@ -35,7 +35,7 @@ define(["extender"], function(extender){
 ```
 
 
-##Usage
+## Usage
 
 **`extender.define(tester, decorations)`**
 
@@ -50,18 +50,18 @@ function isString(obj) {
 
 
 var myExtender = extender.define(isString, {
-		multiply: function (str, times) {
-			var ret = str;
-			for (var i = 1; i < times; i++) {
-				ret += str;
-			}
-			return ret;
-		},
-		toArray: function (str, delim) {
-			delim = delim || "";
-			return str.split(delim);
+	multiply: function (str, times) {
+		var ret = str;
+		for (var i = 1; i < times; i++) {
+			ret += str;
 		}
-	});
+		return ret;
+	},
+	toArray: function (str, delim) {
+		delim = delim || "";
+		return str.split(delim);
+	}
+});
 
 myExtender("hello").multiply(2).value(); //hellohello
 
@@ -77,7 +77,7 @@ function isUndefined(obj) {
 }
 
 function isUndefinedOrNull(obj) {
-	var undef;
+var undef;
     return obj === undef || obj === null;
 }
 
@@ -95,11 +95,11 @@ function isString(obj) {
 }
 
 var myExtender = extender.define({
-	isUndefined : isUndefined,
-	isUndefinedOrNull : isUndefinedOrNull,
-	isArray : isArray,
-	isBoolean : isBoolean,
-	isString : isString
+isUndefined : isUndefined,
+isUndefinedOrNull : isUndefinedOrNull,
+isArray : isArray,
+isBoolean : isBoolean,
+isString : isString
 });
 
 ```
@@ -117,19 +117,19 @@ You can also chain extenders so that they accept multiple types and decorates ac
 ```javascript
 myExtender
     .define(isArray, {
-		pluck: function (arr, m) {
-			var ret = [];
-			for (var i = 0, l = arr.length; i < l; i++) {
-				ret.push(arr[i][m]);
-			}
-			return ret;
+	pluck: function (arr, m) {
+		var ret = [];
+		for (var i = 0, l = arr.length; i < l; i++) {
+			ret.push(arr[i][m]);
 		}
-	})
+		return ret;
+	}
+})
     .define(isBoolean, {
-		invert: function (val) {
-			return !val;
-		}
-	});
+	invert: function (val) {
+		return !val;
+	}
+});
 
 myExtender([{a: "a"},{a: "b"},{a: "c"}]).pluck("a").value(); //["a", "b", "c"]
 myExtender("I love javascript!").toArray(/\s+/).pluck("0"); //["I", "l", "j"]
@@ -157,10 +157,10 @@ When creating an extender you can also specify a constructor which will be invok
 
 ```javascript
 myExtender.define(isString, {
-	constructor : function(val){
-	    //set our value to the string trimmed
-		this._value = val.trimRight().trimLeft();
-	}
+constructor : function(val){
+    //set our value to the string trimmed
+	this._value = val.trimRight().trimLeft();
+}
 });
 ```
 
@@ -188,6 +188,74 @@ myValidator().isNotNull().isEmailAddress().validator(); //now you dont need to c
 
 
 ```
+**`extender.extend(extendr)`**
+
+You may also compose extenders through the use of `extender.extend(extender)`, which will return an entirely new extender that is the composition of extenders.
+
+Suppose you have the following two extenders.
+
+```javascript
+var myExtender = extender
+       .define({
+           isFunction: is.function,
+           isNumber: is.number,
+           isString: is.string,
+           isDate: is.date,
+           isArray: is.array,
+           isBoolean: is.boolean,
+           isUndefined: is.undefined,
+           isDefined: is.defined,
+           isUndefinedOrNull: is.undefinedOrNull,
+           isNull: is.null,
+           isArguments: is.arguments,
+           isInstanceOf: is.instanceOf,
+           isRegExp: is.regExp
+       });
+var myExtender2 = extender.define(is.array, {
+    pluck: function (arr, m) {
+        var ret = [];
+        for (var i = 0, l = arr.length; i < l; i++) {
+            ret.push(arr[i][m]);
+        }
+        return ret;
+    },
+
+    noWrap: {
+        pluckPlain: function (arr, m) {
+            var ret = [];
+            for (var i = 0, l = arr.length; i < l; i++) {
+                ret.push(arr[i][m]);
+            }
+            return ret;
+        }
+    }
+});
+
+
+```
+
+And you do not want to alter either of them but instead what to create a third that is the union of the two.
+
+
+```javascript
+var composed = extender.extend(myExtender).extend(myExtender2);
+```
+So now you can use the new extender with the joined functionality if `myExtender` and `myExtender2`.
+
+```javascript
+var extended = composed([
+     {a: "a"},
+     {a: "b"},
+     {a: "c"}
+]);
+extended.isArray().value(); //true
+extended.pluck("a").value(); // ["a", "b", "c"]);
+
+```
+
+**Note** `myExtender` and `myExtender2` will **NOT** be altered.
+
+
 
 **Using `instanceof`**
 
@@ -199,15 +267,6 @@ var str = myExtender("hello");
 str instanceof myExtender; //true
 ```
 
-##Examples
+## Examples
 
 To see more examples click [here](https://github.com/doug-martin/extender/tree/master/examples)
-
-
-
-
-
-
-
-
-

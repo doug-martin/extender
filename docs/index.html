@@ -209,18 +209,18 @@ define([&quot;extender&quot;], function(extender){
 
 
 var myExtender = extender.define(isString, {
-        multiply: function (str, times) {
-            var ret = str;
-            for (var i = 1; i &lt; times; i++) {
-                ret += str;
-            }
-            return ret;
-        },
-        toArray: function (str, delim) {
-            delim = delim || &quot;&quot;;
-            return str.split(delim);
+    multiply: function (str, times) {
+        var ret = str;
+        for (var i = 1; i &lt; times; i++) {
+            ret += str;
         }
-    });
+        return ret;
+    },
+    toArray: function (str, delim) {
+        delim = delim || &quot;&quot;;
+        return str.split(delim);
+    }
+});
 
 myExtender(&quot;hello&quot;).multiply(2).value(); //hellohello</code></pre>
 <p>If you do not specify a tester function and just pass in an object of <code>functions</code> then all values passed in will be decorated with methods.
@@ -233,7 +233,7 @@ function isUndefined(obj) {
 }
 
 function isUndefinedOrNull(obj) {
-    var undef;
+var undef;
     return obj === undef || obj === null;
 }
 
@@ -251,11 +251,11 @@ function isString(obj) {
 }
 
 var myExtender = extender.define({
-    isUndefined : isUndefined,
-    isUndefinedOrNull : isUndefinedOrNull,
-    isArray : isArray,
-    isBoolean : isBoolean,
-    isString : isString
+isUndefined : isUndefined,
+isUndefinedOrNull : isUndefinedOrNull,
+isArray : isArray,
+isBoolean : isBoolean,
+isString : isString
 });</code></pre>
 <p>To use
 
@@ -268,19 +268,19 @@ myExtender(undef).isUndefined().value(); //true</code></pre>
 </p>
 <pre class='prettyprint linenums lang-js'><code class="lang-javascript">myExtender
     .define(isArray, {
-        pluck: function (arr, m) {
-            var ret = [];
-            for (var i = 0, l = arr.length; i &lt; l; i++) {
-                ret.push(arr[i][m]);
-            }
-            return ret;
+    pluck: function (arr, m) {
+        var ret = [];
+        for (var i = 0, l = arr.length; i &lt; l; i++) {
+            ret.push(arr[i][m]);
         }
-    })
+        return ret;
+    }
+})
     .define(isBoolean, {
-        invert: function (val) {
-            return !val;
-        }
-    });
+    invert: function (val) {
+        return !val;
+    }
+});
 
 myExtender([{a: &quot;a&quot;},{a: &quot;b&quot;},{a: &quot;c&quot;}]).pluck(&quot;a&quot;).value(); //[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]
 myExtender(&quot;I love javascript!&quot;).toArray(/\s+/).pluck(&quot;0&quot;); //[&quot;I&quot;, &quot;l&quot;, &quot;j&quot;]</code></pre>
@@ -312,10 +312,10 @@ myExtender(&quot;I love javascript!&quot;).toArray(/\s+/).pluck(&quot;0&quot;); 
 
 </p>
 <pre class='prettyprint linenums lang-js'><code class="lang-javascript">myExtender.define(isString, {
-    constructor : function(val){
-        //set our value to the string trimmed
-        this._value = val.trimRight().trimLeft();
-    }
+constructor : function(val){
+    //set our value to the string trimmed
+    this._value = val.trimRight().trimLeft();
+}
 });</code></pre>
 <p><strong><code>noWrap</code></strong>
 
@@ -340,6 +340,70 @@ var myValidator = extender.define({
 });
 
 myValidator().isNotNull().isEmailAddress().validator(); //now you dont need to call .value()</code></pre>
+<p><strong><code>extender.extend(extendr)</code></strong>
+
+</p>
+<p>You may also compose extenders through the use of <code>extender.extend(extender)</code>, which will return an entirely new extender that is the composition of extenders.
+
+</p>
+<p>Suppose you have the following two extenders.
+
+</p>
+<pre class='prettyprint linenums lang-js'><code class="lang-javascript">var myExtender = extender
+       .define({
+           isFunction: is.function,
+           isNumber: is.number,
+           isString: is.string,
+           isDate: is.date,
+           isArray: is.array,
+           isBoolean: is.boolean,
+           isUndefined: is.undefined,
+           isDefined: is.defined,
+           isUndefinedOrNull: is.undefinedOrNull,
+           isNull: is.null,
+           isArguments: is.arguments,
+           isInstanceOf: is.instanceOf,
+           isRegExp: is.regExp
+       });
+var myExtender2 = extender.define(is.array, {
+    pluck: function (arr, m) {
+        var ret = [];
+        for (var i = 0, l = arr.length; i &lt; l; i++) {
+            ret.push(arr[i][m]);
+        }
+        return ret;
+    },
+
+    noWrap: {
+        pluckPlain: function (arr, m) {
+            var ret = [];
+            for (var i = 0, l = arr.length; i &lt; l; i++) {
+                ret.push(arr[i][m]);
+            }
+            return ret;
+        }
+    }
+});</code></pre>
+<p>And you do not want to alter either of them but instead what to create a third that is the union of the two.
+
+
+</p>
+<pre class='prettyprint linenums lang-js'><code class="lang-javascript">var composed = extender.extend(myExtender).extend(myExtender2);</code></pre>
+<p>So now you can use the new extender with the joined functionality if <code>myExtender</code> and <code>myExtender2</code>.
+
+</p>
+<pre class='prettyprint linenums lang-js'><code class="lang-javascript">var extended = composed([
+     {a: &quot;a&quot;},
+     {a: &quot;b&quot;},
+     {a: &quot;c&quot;}
+]);
+extended.isArray().value(); //true
+extended.pluck(&quot;a&quot;).value(); // [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]);</code></pre>
+<p><strong>Note</strong> <code>myExtender</code> and <code>myExtender2</code> will <strong>NOT</strong> be altered.
+
+
+
+</p>
 <p><strong>Using <code>instanceof</code></strong>
 
 </p>

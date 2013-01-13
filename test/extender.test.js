@@ -152,5 +152,61 @@ it.describe("extender",function (it) {
         assert.isFalse(myExtender(extended.pluck).isFunction().value());
     });
 
+    it.should("allow extending extenders", function () {
+        var myExtender = extender
+            .define({
+                isFunction: is.function,
+                isNumber: is.number,
+                isString: is.string,
+                isDate: is.date,
+                isArray: is.array,
+                isBoolean: is.boolean,
+                isUndefined: is.undefined,
+                isDefined: is.defined,
+                isUndefinedOrNull: is.undefinedOrNull,
+                isNull: is.null,
+                isArguments: is.arguments,
+                isInstanceOf: is.instanceOf,
+                isRegExp: is.regExp
+            });
+        var myExtender2 = extender.define(is.array, {
+            pluck: function (arr, m) {
+                var ret = [];
+                for (var i = 0, l = arr.length; i < l; i++) {
+                    ret.push(arr[i][m]);
+                }
+                return ret;
+            },
+
+            noWrap: {
+                pluckPlain: function (arr, m) {
+                    var ret = [];
+                    for (var i = 0, l = arr.length; i < l; i++) {
+                        ret.push(arr[i][m]);
+                    }
+                    return ret;
+                }
+            }
+        });
+        var composed = extender.extend(myExtender).extend(myExtender2);
+
+        var extended = composed([
+            {a: "a"},
+            {a: "b"},
+            {a: "c"}
+        ]);
+        assert.isTrue(extended.isArray().value());
+        assert.deepEqual(extended.pluck("a").value(), ["a", "b", "c"]);
+
+        //it should not alter the compsing extenders
+        assert.throws(function () {
+            myExtender("hello").pluck();
+        });
+        assert.throws(function () {
+            myExtender2("hello").isString();
+        });
+
+    });
+
 
 }).run();

@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
