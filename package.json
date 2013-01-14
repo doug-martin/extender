@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
@@ -20,9 +20,10 @@
     "author": "Doug Martin (blog.dougamartin.com)",
     "license": "MIT",
     "dependencies": {
-        "declare.js": "0.0.2"
+        "declare.js": "0.0.3"
     },
     "devDependencies": {
-        "it": "~0.1.0"
+        "it": "~0.1.0",
+        "grunt-it": "~0.2.0"
     }
 }
