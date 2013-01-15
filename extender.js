@@ -370,11 +370,11 @@
                     },
 
                     eq: function eq(val) {
-                        return _extender(this._value === val);
+                        return this["__extender__"](this._value === val);
                     },
 
                     neq: function neq(other) {
-                        return _extender(this._value !== other);
+                        return this["__extender__"](this._value !== other);
                     },
                     print: function () {
                         console.log(this._value);
@@ -398,7 +398,7 @@
                         var args = slice.call(arguments);
                         args.unshift(this._value);
                         var ret = func.apply(this, args);
-                        return ret !== undef ? _extender(ret) : this;
+                        return ret !== undef ? this["__extender__"](ret) : this;
                     };
                 }
                 proto[name] = extendedMethod;
@@ -445,7 +445,7 @@
             function _extender(obj) {
                 var ret = obj, i, l;
                 if (!(obj instanceof Base)) {
-                    var base = {}, instance = (base.instance = {});
+                    var base = {}, instance = (base.instance = {"__extender__": _extender});
                     for (i = 0, l = defined.length; i < l; i++) {
                         var definer = defined[i];
                         if (definer[0](obj)) {
