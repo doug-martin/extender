@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
@@ -19,11 +19,21 @@
     ],
     "author": "Doug Martin (blog.dougamartin.com)",
     "license": "MIT",
+    "testling": {
+        "files": "test/browserling.js",
+        "browsers": {
+            "ie": [6, 7, 8, 9],
+            "chrome": [4, 23, "canary"],
+            "firefox": [3, 3.5, 3.6, 4, 17, "nightly"],
+            "opera": [10, 10.5, 11, 11.5, 11.6, 12, "next"],
+            "safari": ["5.0.1", 5.1]
+        }
+    },
     "dependencies": {
         "declare.js": "0.0.3"
     },
     "devDependencies": {
-        "it": "~0.1.0",
+        "it": "~0.2.0",
         "grunt-it": "~0.2.0"
     }
 }

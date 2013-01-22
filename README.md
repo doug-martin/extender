@@ -1,7 +1,10 @@
 <a name="top"></a>
 
 
-  [![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
+[![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
+
+[![browser support](http://ci.testling.com/doug-martin/extender.png)](http://ci.testling.com/doug-martin/extender)
+
 # Extender
 
 `extender` is a library that helps in making chainable APIs, by creating a function that accepts different values and returns an object decorated with functions based on the type.

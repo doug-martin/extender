@@ -8,23 +8,23 @@ var it = require("it"),
 it.describe("extender",function (it) {
 
     var isMethods = {
-        isFunction: is.function,
-        isNumber: is.number,
-        isString: is.string,
-        isDate: is.date,
-        isArray: is.array,
-        isBoolean: is.boolean,
-        isUndefined: is.undefined,
-        isDefined: is.defined,
-        isUndefinedOrNull: is.undefinedOrNull,
-        isNull: is.null,
-        isArguments: is.arguments,
-        isInstanceOf: is.instanceOf,
-        isRegExp: is.regExp
+        isFunction: is.isFunction,
+        isNumber: is.isNumber,
+        isString: is.isString,
+        isDate: is.isDate,
+        isArray: is.isArray,
+        isBoolean: is.isBoolean,
+        isUndefined: is.isUndefined,
+        isDefined: is.isDefined,
+        isUndefinedOrNull: is.isUndefinedOrNull,
+        isNull: is.isNull,
+        isArguments: is.isArguments,
+        isInstanceOf: is.isInstanceOf,
+        isRegExp: is.isRegExp
     };
     var myExtender = extender
         .define(isMethods)
-        .define(is.string, {
+        .define(is.isString, {
             multiply: function (str, times) {
                 var ret = str;
                 for (var i = 1; i < times; i++) {
@@ -53,7 +53,7 @@ it.describe("extender",function (it) {
                 }
             }
         })
-        .define(is.array, {
+        .define(is.isArray, {
             pluck: function (arr, m) {
                 var ret = [];
                 for (var i = 0, l = arr.length; i < l; i++) {
@@ -72,7 +72,7 @@ it.describe("extender",function (it) {
                 }
             }
         })
-        .define(is.boolean, {
+        .define(is.isBoolean, {
 
             invert: function (val) {
                 return !val;
@@ -136,19 +136,19 @@ it.describe("extender",function (it) {
     it.should("keep extenders in their own scope", function () {
         var myExtender = extender
             .define({
-                isFunction: is.function,
-                isNumber: is.number,
-                isString: is.string,
-                isDate: is.date,
-                isArray: is.array,
-                isBoolean: is.boolean,
-                isUndefined: is.undefined,
-                isDefined: is.defined,
-                isUndefinedOrNull: is.undefinedOrNull,
-                isNull: is.null,
-                isArguments: is.arguments,
-                isInstanceOf: is.instanceOf,
-                isRegExp: is.regExp
+                isFunction: is.isFunction,
+                isNumber: is.isNumber,
+                isString: is.isString,
+                isDate: is.isDate,
+                isArray: is.isArray,
+                isBoolean: is.isBoolean,
+                isUndefined: is.isUndefined,
+                isDefined: is.isDefined,
+                isUndefinedOrNull: is.isUndefinedOrNull,
+                isNull: is.isNull,
+                isArguments: is.isArguments,
+                isInstanceOf: is.isInstanceOf,
+                isRegExp: is.isRegExp
             });
 
         var extended = myExtender([
@@ -164,7 +164,7 @@ it.describe("extender",function (it) {
         var myExtender = extender
             .define(isMethods)
             .expose(isMethods);
-        var myExtender2 = extender.define(is.array, {
+        var myExtender2 = extender.define(is.isArray, {
             pluck: function (arr, m) {
                 var ret = [];
                 for (var i = 0, l = arr.length; i < l; i++) {
@@ -204,5 +204,27 @@ it.describe("extender",function (it) {
 
     });
 
+    it.describe("custom extenders with constructors", function (it) {
+        var myExtender = extender.define({
+            constructor: function (value) {
+                this.valueType = Object.prototype.toString.call(value);
+            },
 
-}).run();
+            noWrap: {
+                stringType: function () {
+                    return this.valueType;
+                }
+            }
+        });
+
+        it.should("invoke the constructor", function () {
+            assert.equal(myExtender("string").stringType(), "[object String]");
+        });
+
+        it.should("call super properly", function () {
+            assert.equal(myExtender("hello").value(), "hello");
+        });
+    });
+
+
+});

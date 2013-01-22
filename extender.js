@@ -445,14 +445,15 @@
             function _extender(obj) {
                 var ret = obj, i, l;
                 if (!(obj instanceof Base)) {
-                    var base = {}, instance = (base.instance = {"__extender__": _extender});
+                    var OurBase = Base;
                     for (i = 0, l = defined.length; i < l; i++) {
                         var definer = defined[i];
                         if (definer[0](obj)) {
-                            merge(instance, definer[1]);
+                            OurBase = OurBase.extend({instance: definer[1]});
                         }
                     }
-                    ret = new (Base.extend(base))(obj);
+                    ret = new OurBase(obj);
+                    ret["__extender__"] = _extender;
                 }
                 return ret;
             }
@@ -470,6 +471,16 @@
                     decorate = decorate || {};
                     var proto = {};
                     decorateProto(proto, decorate);
+                    //handle browsers like which skip over the constructor while looping
+                    if (!proto.hasOwnProperty("constructor")) {
+                        if (decorate.hasOwnProperty("constructor")) {
+                            addMethod(proto, "constructor", decorate.constructor);
+                        } else {
+                            proto.constructor = function () {
+                                this._super(arguments);
+                            };
+                        }
+                    }
                     defined.push([tester, proto]);
                 }
                 return _extender;

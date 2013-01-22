@@ -65,16 +65,16 @@ function isNumber(obj) {
     return !isUndefinedOrNull(obj) && (typeof obj === "number" || obj instanceof Number);
 }
 
-exports.function = isFunction;
-exports.number = isNumber;
-exports.string = isString;
-exports.date = isDate;
-exports.array = isArray;
-exports.boolean = isBoolean;
-exports.undefined = isUndefined;
-exports.defined = isDefined;
-exports.undefinedOrNull = isUndefinedOrNull;
-exports.null = isNull;
-exports.arguments = isArguments;
-exports.instanceOf = isInstanceOf;
-exports.regExp = isRegExp;
+exports.isFunction = isFunction;
+exports.isNumber = isNumber;
+exports.isString = isString;
+exports.isDate = isDate;
+exports.isArray = isArray;
+exports.isBoolean = isBoolean;
+exports.isUndefined = isUndefined;
+exports.isDefined = isDefined;
+exports.isUndefinedOrNull = isUndefinedOrNull;
+exports.isNull = isNull;
+exports.isArguments = isArguments;
+exports.isInstanceOf = isInstanceOf;
+exports.isRegExp = isRegExp;
