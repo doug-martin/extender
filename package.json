@@ -30,7 +30,7 @@
         }
     },
     "dependencies": {
-        "declare.js": "0.0.3"
+        "declare.js": "~0.0.4"
     },
     "devDependencies": {
         "it": "~0.2.0",
