@@ -530,8 +530,8 @@
 
         }
     } else if ("function" === typeof define) {
-        define(["require"], function (require) {
-            return defineExtender((require("declare.js")));
+        define(["declare"], function (declare) {
+            return defineExtender(declare);
         });
     } else {
         this.extender = defineExtender(this.declare);

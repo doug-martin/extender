@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
@@ -21,19 +21,23 @@
     "license": "MIT",
     "testling": {
         "files": "test/browserling.js",
-        "browsers": {
-            "ie": [6, 7, 8, 9],
-            "chrome": [4, 23, "canary"],
-            "firefox": [3, 3.5, 3.6, 4, 17, "nightly"],
-            "opera": [10, 10.5, 11, 11.5, 11.6, 12, "next"],
-            "safari": ["5.0.1", 5.1]
-        }
+        "browsers": [
+            "ie/6..latest",
+            "chrome/20..latest",
+            "firefox/14..latest",
+            "safari/latest",
+            "iphone/6",
+            "ipad/6"
+        ]
     },
     "dependencies": {
-        "declare.js": "~0.0.4"
+        "declare.js": "~0.0.4",
+        "grunt": "~0.4.1"
     },
     "devDependencies": {
         "it": "~0.2.0",
-        "grunt-it": "~0.2.0"
+        "grunt-it": "~0.3.0",
+        "grunt-contrib-uglify": "~0.2.0",
+        "grunt-contrib-jshint": "~0.4.3"
     }
 }
