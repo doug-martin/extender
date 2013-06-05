@@ -1,9 +1,9 @@
 <a name="top"></a>
 
 
-[![build status](https://secure.travis-ci.org/doug-martin/extender.png)](http://travis-ci.org/doug-martin/extender)
+[![build status](https://secure.travis-ci.org/doug-martin/extender.png)](https://travis-ci.org/doug-martin/extender)
 
-[![browser support](http://ci.testling.com/doug-martin/extender.png)](http://ci.testling.com/doug-martin/extender)
+[![browser support](https://ci.testling.com/doug-martin/extender.png)](https://ci.testling.com/doug-martin/extender)
 
 # Extender
 

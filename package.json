@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
@@ -22,7 +22,7 @@
     "testling": {
         "files": "test/browserling.js",
         "browsers": [
-            "ie/6..latest",
+            "ie/8..latest",
             "chrome/20..latest",
             "firefox/14..latest",
             "safari/latest",

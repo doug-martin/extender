@@ -529,7 +529,7 @@
             module.exports = defineExtender(require("declare.js"));
 
         }
-    } else if ("function" === typeof define) {
+    } else if ("function" === typeof define && define.amd) {
         define(["declare"], function (declare) {
             return defineExtender(declare);
         });
