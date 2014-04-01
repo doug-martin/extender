@@ -1,6 +1,6 @@
 {
     "name": "extender",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "Easily create object decorators!",
     "main": "index.js",
     "scripts": {
@@ -31,10 +31,10 @@
         ]
     },
     "dependencies": {
-        "declare.js": "~0.0.4",
-        "grunt": "~0.4.1"
+        "declare.js": "~0.0.4"
     },
     "devDependencies": {
+        "grunt": "~0.4.1",
         "it": "~0.2.0",
         "grunt-it": "~0.3.0",
         "grunt-contrib-uglify": "~0.2.0",
